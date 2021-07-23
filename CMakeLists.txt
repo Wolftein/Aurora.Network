@@ -46,5 +46,5 @@ ADD_DEFINITIONS(-D_WIN32_WINNT=0x0601)
 ## Modules
 ## -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/Source/Foundation)
-ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/Source/Proxy)
+ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/Code/Foundation)
+ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/Code/Proxy)
