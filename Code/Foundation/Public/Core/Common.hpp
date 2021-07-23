@@ -40,17 +40,17 @@ inline namespace STL
     // -=(Undocumented)=-
     using SInt64 = int64_t;
 
-	// -=(Undocumented)=-
-	using UInt08 = uint8_t;
+    // -=(Undocumented)=-
+    using UInt08 = uint8_t;
 
-	// -=(Undocumented)=-
-	using UInt16 = uint16_t;
+    // -=(Undocumented)=-
+    using UInt16 = uint16_t;
 
-	// -=(Undocumented)=-
-	using UInt32 = uint32_t;
+    // -=(Undocumented)=-
+    using UInt32 = uint32_t;
 
-	// -=(Undocumented)=-
-	using UInt64 = uint64_t;
+    // -=(Undocumented)=-
+    using UInt64 = uint64_t;
 
     // -=(Undocumented)=-
     using Real32 = float_t;
