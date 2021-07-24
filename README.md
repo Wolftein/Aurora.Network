@@ -1,4 +1,4 @@
-Para los que quieran compilar esta DLL desde la linea de comandos:
+For those who want to compile this library from the command line:
 
 ```
 mkdir build && cd build
