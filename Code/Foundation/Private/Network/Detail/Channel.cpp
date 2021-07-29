@@ -18,6 +18,8 @@
 
 namespace Aurora::Network::Detail
 {
+    constexpr static UInt32 k_Header = 2;
+
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
@@ -91,17 +93,17 @@ namespace Aurora::Network::Detail
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-    void Channel::Close()
+    void Channel::Close(Bool Force)
     {
         if (mState == State::Connecting || mState == State::Connected)
         {
-            if (mWriter || !mEncoder.IsEmpty())
+            if (Force || (mWriter == 0 && mEncoder.IsEmpty()))
             {
-                mState = State::Closing;
+                DoClose(0);
             }
             else
             {
-                DoClose(0);
+                mState = State::Closing;
             }
         }
     }
@@ -113,7 +115,7 @@ namespace Aurora::Network::Detail
     {
         if (mState == State::Connected && Message.GetOffset() > 0)
         {
-            const CPtr<UInt08> Chunk = mEncoder.Reserve(Message.GetOffset());
+            const CPtr<UInt08> Chunk = mEncoder.Reserve(Message.GetOffset() + k_Header);
 
             if (Chunk.empty())
             {
@@ -123,7 +125,11 @@ namespace Aurora::Network::Detail
             {
                 const CPtr<const UInt08> Block = Message.GetData();
 
-                eastl::copy(Block.begin(), Block.begin() + Message.GetOffset(), Chunk.data());
+                * reinterpret_cast<UInt16 *>(Chunk.data()) = Block.size();
+
+                eastl::copy(Block.begin(), Block.begin() + Message.GetOffset(), Chunk.data() + k_Header);
+
+                mOnForward(shared_from_this(), Chunk.subspan(k_Header, Message.GetOffset()));
 
                 mEncoder.Commit(Chunk.size());
 
@@ -140,7 +146,7 @@ namespace Aurora::Network::Detail
 
     void Channel::Flush()
     {
-        if (mState == State::Connected && !mWriter)
+        if (mState == State::Connected && mWriter == 0)
         {
             DoFlush();
         }
@@ -201,7 +207,7 @@ namespace Aurora::Network::Detail
             const auto OnCompletion = [Self = shared_from_this()](const auto Error, auto Transferred) {
                 Self->WhenRead(Error, Transferred, Sequence::Header);
             };
-            asio::async_read(mChannel, asio::mutable_buffer(& mHeader, sizeof(mHeader)), OnCompletion);
+            asio::async_read(mChannel, asio::mutable_buffer(& mHeader, k_Header), OnCompletion);
         }
         else
         {
@@ -230,16 +236,10 @@ namespace Aurora::Network::Detail
         {
             mWriter = Chunk.size();
 
-            mOnForward(shared_from_this(), Chunk);
-
-            eastl::array<asio::const_buffer, 2> Buffers = {
-                asio::const_buffer(& mWriter, sizeof(mWriter)), asio::const_buffer(Chunk.data(), Chunk.size())
-            };
-
             const auto OnCompletion = [Self = shared_from_this()](const auto Error, auto Transferred) {
                 Self->WhenWrite(Error, Transferred);
             };
-            asio::async_write(mChannel, Buffers, OnCompletion);
+            asio::async_write(mChannel, asio::const_buffer(Chunk.data(), Chunk.size()), OnCompletion);
         }
         else
         {
@@ -325,17 +325,17 @@ namespace Aurora::Network::Detail
 
     void Channel::WhenRead(const std::error_code & Error, UInt32 Transferred, Sequence Operation)
     {
-        if (mState != State::Connected)
-        {
-            return;
-        }
-
         if (Error)
         {
             WhenError(Error);
         }
         else
         {
+            if (mState != State::Connected)
+            {
+                return;
+            }
+
             if (Operation == Sequence::Header)
             {
                 DoRead(Sequence::Body, mHeader);

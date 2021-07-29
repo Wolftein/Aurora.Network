@@ -31,7 +31,7 @@ inline namespace Proxy
 
         HRESULT Connect([in] vbStr8 Address, [in] vbStr8 Service);
 
-        HRESULT Close();
+        HRESULT Close([in] vbBool Force);
 
         HRESULT Send([in] vbBool Urgent, [in] Writer_ * Message);
 
@@ -59,7 +59,7 @@ inline namespace Proxy
         HRESULT Connect(vbStr8 Address, vbStr8 Service);
 
         // \inheritDoc
-        HRESULT Close();
+        HRESULT Close(vbBool Force);
 
         // \inheritDoc
         HRESULT Send(vbBool Urgent, Writer_ * Message);

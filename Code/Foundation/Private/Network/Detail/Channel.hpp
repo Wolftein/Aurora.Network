@@ -76,7 +76,7 @@ namespace Aurora::Network::Detail
         void Connect(CStr8 Address, CStr8 Service);
 
         // -=(Undocumented)=-
-        void Close();
+        void Close(Bool Force);
 
         // -=(Undocumented)=-
         void Send(Bool Urgent, Writer & Message);

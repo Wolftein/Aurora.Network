@@ -107,7 +107,7 @@ namespace Aurora::Network::Detail
     {
         if (const SPtr<Channel> & Channel = mDatabase[ID])
         {
-            Channel->Close();
+            Channel->Close(false);
         }
     }
 

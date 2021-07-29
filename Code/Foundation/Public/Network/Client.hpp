@@ -58,7 +58,7 @@ namespace Aurora::Network
         virtual void Connect(CStr8 Address, CStr8 Service) = 0;
 
         // -=(Undocumented)=-
-        virtual void Close() = 0;
+        virtual void Close(Bool Force) = 0;
 
         // -=(Undocumented)=-
         virtual void Send(Bool Urgent, Writer & Message) = 0;

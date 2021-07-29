@@ -42,7 +42,7 @@ namespace Aurora::Network::Detail
         void Connect(CStr8 Address, CStr8 Service) override;
 
         // \inheritDoc
-        void Close() override;
+        void Close(Bool Force) override;
 
         // \inheritDoc
         void Send(Bool Urgent, Writer & Message) override;
