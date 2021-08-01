@@ -79,7 +79,7 @@ namespace Aurora::Network::Detail
         const asio::ip::tcp::endpoint Endpoint
             = (* asio::ip::tcp::resolver(mAcceptor.get_executor()).resolve(Address.data(), Service.data()));
 
-        mDatabase.resize(Capacity);
+        mDatabase.resize(Capacity + 1);
 
         mAcceptor.open(Endpoint.protocol());
         mAcceptor.set_option(asio::ip::tcp::acceptor::reuse_address(true));

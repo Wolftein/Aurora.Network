@@ -59,7 +59,7 @@ Private Sub OnClientReceive(ByVal Buffer As Network.Reader)
     End Select
 End Sub
 
-Private Sub OnServerAttach(ByVal Connection As Long, ByVal Address As Long)
+Private Sub OnServerAttach(ByVal Connection As Long, ByVal Address As String)
     Debug.Print "OnServerAttach", Connection, Address
     
     Call Server.Send(Connection, False, Create1stMessage())

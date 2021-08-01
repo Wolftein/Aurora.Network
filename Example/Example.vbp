@@ -1,6 +1,6 @@
 Type=Exe
 Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#..\..\..\..\..\..\Windows\SysWOW64\stdole2.tlb#OLE Automation
-Reference=*\G{88D89F7C-BB59-4F13-9850-93CBD874039D}#1.5#0#d:\BACKUP_100\Aurora.Network\.idea\cmake-release-build\Code\Proxy\Aurora.Network.dll#Aurora.Network - Aurora Engine - Network
+Reference=*\G{88D89F7C-BB59-4F13-9850-93CBD874039D}#1.5#0#Aurora.Network.dll#Aurora.Network - Aurora Engine - Network
 Module=Module; Module.bas
 Startup="Sub Main"
 Command32=""
