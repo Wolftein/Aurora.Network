@@ -34,7 +34,7 @@ inline namespace Proxy
 
         HRESULT Close();
 
-        HRESULT Kick([in] vbInt32 Session);
+        HRESULT Kick([in] vbInt32 Session, [in] vbBool Force);
 
         HRESULT Send([in] vbInt32 Session, [in] vbBool Urgent, [in] Writer_ * Message);
 
@@ -67,7 +67,7 @@ inline namespace Proxy
         HRESULT Close();
 
         // \inheritDoc
-        HRESULT Kick(vbInt32 Session);
+        HRESULT Kick(vbInt32 Session, vbBool Force);
 
         // \inheritDoc
         HRESULT Send(vbInt32 Session, vbBool Urgent, Writer_ * Message);

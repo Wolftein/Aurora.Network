@@ -103,6 +103,8 @@ namespace Aurora::Network::Detail
             }
             else
             {
+                Flush();
+                
                 mState = State::Closing;
             }
         }

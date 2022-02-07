@@ -61,7 +61,7 @@ namespace Aurora::Network
         virtual void Close() = 0;
 
         // -=(Undocumented)=-
-        virtual void Kick(UInt32 ID) = 0;
+        virtual void Kick(UInt32 ID, Bool Force) = 0;
 
         // -=(Undocumented)=-
         virtual void Send(UInt32 ID, Bool Urgent, Writer & Message) = 0;

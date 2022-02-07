@@ -103,11 +103,11 @@ namespace Aurora::Network::Detail
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-    void Acceptor::Kick(UInt32 ID)
+    void Acceptor::Kick(UInt32 ID, Bool Force)
     {
         if (const SPtr<Channel> & Channel = mDatabase[ID])
         {
-            Channel->Close(false);
+            Channel->Close(Force);
         }
     }
 

@@ -96,9 +96,9 @@ inline namespace Proxy
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-    HRESULT Server::Kick(vbInt32 Connection)
+    HRESULT Server::Kick(vbInt32 Connection, vbBool Force)
     {
-        mWrapper->Kick(Connection);
+        mWrapper->Kick(Connection, VBIsTrue(Force));
         return S_OK;
     }
 

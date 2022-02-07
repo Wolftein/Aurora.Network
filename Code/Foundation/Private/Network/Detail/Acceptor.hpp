@@ -45,7 +45,7 @@ namespace Aurora::Network::Detail
         void Close() override;
 
         // \inheritDoc
-        void Kick(UInt32 ID) override;
+        void Kick(UInt32 ID, Bool Force) override;
 
         // \inheritDoc
         void Send(UInt32 ID, Bool Urgent, Writer & Message) override;
