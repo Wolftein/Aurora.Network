@@ -15,6 +15,7 @@
 #include "COM_Group.hpp"
 #include "COM_Reader.hpp"
 #include "COM_Writer.hpp"
+#include "COM_Statistics.hpp"
 #include <Network/Server.hpp>
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -41,6 +42,8 @@ inline namespace Proxy
         HRESULT Broadcast([in] Group_ * Set, [in] vbBool Urgent, [in] Writer_ * Message);
 
         HRESULT Flush([in, defaultvalue(0)] vbInt32 Session);
+
+        HRESULT GetStatistics([in] vbInt32 Session, [out, retval] Statistics * Result);
     };
 
     [coclass, uuid("AC398261-6275-4797-950A-5B914DDB2130")]
@@ -77,6 +80,9 @@ inline namespace Proxy
 
         // \inheritDoc
         HRESULT Flush(vbInt32 Session);
+
+        // \inheritDoc
+        HRESULT GetStatistics(vbInt32 Session, Statistics * Result);
 
     public:
 

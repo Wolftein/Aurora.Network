@@ -12,9 +12,7 @@
 // [  HEADER  ]
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-#include "Reader.hpp"
-#include "Writer.hpp"
-#include "Statistics.hpp"
+#include "Core/Core.hpp"
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 // [   CODE   ]
@@ -23,51 +21,21 @@
 namespace Aurora::Network
 {
     // -=(Undocumented)=-
-    class Client
+    struct Statistics final
     {
-    public:
+        // -=(Undocumented)=-
+        UInt64 TotalBytesSent;
 
         // -=(Undocumented)=-
-        using OnAttach  = Method<void()>;
+        UInt64 TotalBytesReceived;
 
         // -=(Undocumented)=-
-        using OnDetach  = Method<void(SInt32 Code)>;
+        UInt64 TotalBytesPending;
 
         // -=(Undocumented)=-
-        using OnForward = Method<void(Reader & Message)>;
+        UInt64 TotalPacketSent;
 
         // -=(Undocumented)=-
-        using OnReceive = Method<void(Reader & Message)>;
-
-    public:
-
-        // -=(Undocumented)=-
-        static SPtr<Client> Create();
-
-    public:
-
-        // -=(Undocumented)=-
-        virtual ~Client() = default;
-
-        // -=(Undocumented)=-
-        virtual void Poll() = 0;
-
-        // -=(Undocumented)=-
-        virtual void Attach(OnAttach OnAttach, OnDetach OnDetach, OnForward OnForward, OnReceive OnReceive) = 0;
-
-        // -=(Undocumented)=-
-        virtual void Connect(CStr8 Address, CStr8 Service) = 0;
-
-        // -=(Undocumented)=-
-        virtual void Close(Bool Force) = 0;
-
-        // -=(Undocumented)=-
-        virtual void Send(Bool Urgent, Writer & Message) = 0;
-
-        // -=(Undocumented)=-
-        virtual void Flush() = 0;
-
-        // -=(Undocumented)=-
-        virtual Statistics GetStatistics() const = 0;
+        UInt64 TotalPacketReceived;
     };
 }

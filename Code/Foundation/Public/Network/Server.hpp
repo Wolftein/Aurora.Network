@@ -14,6 +14,7 @@
 
 #include "Reader.hpp"
 #include "Writer.hpp"
+#include "Statistics.hpp"
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 // [   CODE   ]
@@ -47,6 +48,9 @@ namespace Aurora::Network
 
         // -=(Undocumented)=-
         virtual ~Server() = default;
+
+        // -=(Undocumented)=-
+        virtual Statistics GetStatistics(UInt32 ID) const = 0;
 
         // -=(Undocumented)=-
         virtual void Poll() = 0;

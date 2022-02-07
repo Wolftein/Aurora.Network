@@ -137,4 +137,11 @@ inline namespace Proxy
     {
         return (Value != vbTrue);
     }
+
+    // -=(Undocumented)=-
+    inline void VBInt64(UInt64 Value, vbInt64 & Output)
+    {
+        Output.vt    = VT_UI8;
+        Output.llVal = Value;
+    }
 }

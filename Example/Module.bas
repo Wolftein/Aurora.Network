@@ -57,6 +57,7 @@ Private Sub OnClientReceive(ByVal Buffer As Network.Reader)
             Debug.Print "Create1stMessage", Buffer.ReadString8()
             Call Client.Send(False, Create2ndMessage())
     End Select
+    
 End Sub
 
 Private Sub OnServerAttach(ByVal Connection As Long, ByVal Address As String)
@@ -95,6 +96,9 @@ Private Sub OnServerReceive(ByVal Connection As Long, ByVal Buffer As Network.Re
     Select Case Buffer.ReadInt()
         Case 1
             Debug.Print "Create2ndMessage", Buffer.ReadString8()
+  
+            Call PrintStats("Client", Client.GetStatistics())
+            Call PrintStats("Server", Server.GetStatistics(Connection))
     End Select
 End Sub
 
@@ -114,8 +118,15 @@ Private Sub Main()
         
         Call Client.Flush
         Call Client.Poll
-        
+
         DoEvents
     Loop
 End Sub
 
+Private Sub PrintStats(ByVal Header As String, ByRef Stats As Network.Statistics)
+    Debug.Print Header, "Bytes Sent", Stats.TotalBytesSent
+    Debug.Print Header, "Bytes Received", Stats.TotalBytesReceived
+    Debug.Print Header, "Bytes Pending", Stats.TotalBytesPending
+    Debug.Print Header, "Messages Received", Stats.TotalPacketReceived
+    Debug.Print Header, "Messages Sent", Stats.TotalPacketSent
+End Sub

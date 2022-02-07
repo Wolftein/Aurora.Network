@@ -50,6 +50,9 @@ namespace Aurora::Network::Detail
         // \inheritDoc
         void Flush() override;
 
+        // \inheritDoc
+        Statistics GetStatistics() const override;
+
     private:
 
         // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-

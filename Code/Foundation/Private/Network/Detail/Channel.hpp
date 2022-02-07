@@ -14,6 +14,7 @@
 
 #include "Network/Reader.hpp"
 #include "Network/Writer.hpp"
+#include "Network/Statistics.hpp"
 #include "Network/Detail/Buffer.hpp"
 #include <asio.hpp>
 
@@ -68,6 +69,9 @@ namespace Aurora::Network::Detail
 
         // -=(Undocumented)=-
         Str8 GetAddress() const;
+
+        // -=(Undocumented)=-
+        Statistics GetStatistics() const;
 
         // -=(Undocumented)=-
         void Attach(OnAttach OnAttach, OnDetach OnDetach, OnForward OnForward, OnReceive OnReceive);
@@ -127,6 +131,7 @@ namespace Aurora::Network::Detail
         UInt32                mID;
         asio::ip::tcp::socket mChannel;
         State                 mState;
+        Statistics            mStats;
 
         // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
         // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-

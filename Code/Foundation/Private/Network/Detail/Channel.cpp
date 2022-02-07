@@ -27,6 +27,7 @@ namespace Aurora::Network::Detail
         : mID      { 0 },
           mChannel { eastl::move(Channel) },
           mState   { State::Closed },
+          mStats   { 0 },
           mEncoder { 65'536 },
           mDecoder { 65'536 },
           mWriter  { 0 },
@@ -56,6 +57,14 @@ namespace Aurora::Network::Detail
     Str8 Channel::GetAddress() const
     {
         return mChannel.remote_endpoint().address().to_v4().to_string().c_str();
+    }
+
+    // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+    // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+    Statistics Channel::GetStatistics() const
+    {
+        return mStats;
     }
 
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -104,7 +113,7 @@ namespace Aurora::Network::Detail
             else
             {
                 Flush();
-                
+
                 mState = State::Closing;
             }
         }
@@ -134,6 +143,9 @@ namespace Aurora::Network::Detail
                 mOnForward(shared_from_this(), Chunk.subspan(k_Header, Message.GetOffset()));
 
                 mEncoder.Commit(Chunk.size());
+
+                ++mStats.TotalPacketSent;
+                mStats.TotalBytesPending += Block.size() + k_Header;
 
                 if (Urgent)
                 {
@@ -179,6 +191,7 @@ namespace Aurora::Network::Detail
         }
 
         mState = State::Closed;
+        mStats = { 0 };
 
         asio::error_code Error;
         mChannel.shutdown(asio::ip::tcp::socket::shutdown_both, Error);
@@ -263,6 +276,8 @@ namespace Aurora::Network::Detail
 
         if (!Chunk.empty())
         {
+            ++mStats.TotalPacketReceived;
+
             mOnReceive(shared_from_this(), Chunk);
         }
         mDecoder.Consume(Chunk.size());
@@ -338,6 +353,8 @@ namespace Aurora::Network::Detail
                 return;
             }
 
+            mStats.TotalBytesReceived += Transferred;
+
             if (Operation == Sequence::Header)
             {
                 DoRead(Sequence::Body, mHeader);
@@ -369,6 +386,9 @@ namespace Aurora::Network::Detail
         }
         else
         {
+            mStats.TotalBytesSent    += Transferred;
+            mStats.TotalBytesPending -= Transferred;
+
             mEncoder.Consume(mWriter);
 
             DoFlush();

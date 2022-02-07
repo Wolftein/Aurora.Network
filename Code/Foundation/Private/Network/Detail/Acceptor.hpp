@@ -59,6 +59,9 @@ namespace Aurora::Network::Detail
         // \inheritDoc
         void Flush(UInt32 ID) override;
 
+        // \inheritDoc
+        Statistics GetStatistics(UInt32 ID) const override;
+
     private:
 
         // -=(Undocumented)=-

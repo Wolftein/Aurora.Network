@@ -14,6 +14,7 @@
 
 #include "COM_Reader.hpp"
 #include "COM_Writer.hpp"
+#include "COM_Statistics.hpp"
 #include <Network/Client.hpp>
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -36,6 +37,8 @@ inline namespace Proxy
         HRESULT Send([in] vbBool Urgent, [in] Writer_ * Message);
 
         HRESULT Flush();
+
+        HRESULT GetStatistics([out, retval] Statistics * Result);
     };
 
     [coclass, uuid("07CC11E3-D300-4CD4-9EB0-C4EB4D63865D")]
@@ -66,6 +69,9 @@ inline namespace Proxy
 
         // \inheritDoc
         HRESULT Flush();
+
+        // \inheritDoc
+        HRESULT GetStatistics(Statistics * Result);
 
     public:
 

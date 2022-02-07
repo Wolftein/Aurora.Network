@@ -114,4 +114,20 @@ inline namespace Proxy
         mWrapper->Flush();
         return S_OK;
     }
+
+    // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+    // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+    HRESULT Client::GetStatistics(Statistics * Result)
+    {
+        Aurora::Network::Statistics NativeStats = mWrapper->GetStatistics();
+
+        VBInt64(NativeStats.TotalBytesSent,      Result->TotalBytesSent);
+        VBInt64(NativeStats.TotalBytesReceived,  Result->TotalBytesReceived);
+        VBInt64(NativeStats.TotalBytesPending,   Result->TotalBytesPending);
+        VBInt64(NativeStats.TotalPacketSent,     Result->TotalPacketSent);
+        VBInt64(NativeStats.TotalPacketReceived, Result->TotalPacketReceived);
+
+        return S_OK;
+    }
 }
