@@ -106,7 +106,7 @@ namespace Aurora::Network
             do
             {
                 Result |= static_cast<Type>((Peek<UInt08>() & 0x7Fu)) << (7u * Position++);
-            } while (ReadUnsignedInt8() & 0x80u);
+            } while (ReadUnsignedInt8() & 0x80u && Position < 10); // 10 bytes it's the maximum allowed for 64bit numbers
 
             return Result;
         }
