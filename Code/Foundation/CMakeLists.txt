@@ -44,7 +44,7 @@ LIST(APPEND PROJECT_INCLUDE
     ${SOURCE_DIR}/test/packages/EAMain/include
     ${SOURCE_DIR}/test/packages/EAStdC/include
     ${SOURCE_DIR}/test/packages/EAThread/include)
-LIST(APPEND PROJECT_LIBRARY ${BINARY_DIR}${CONFIGURATION_SUFFIX}/EASTL.lib)
+LIST(APPEND PROJECT_LIBRARY ${BINARY_DIR}${CONFIGURATION_SUFFIX}/${CMAKE_BUILD_TYPE}/EASTL.lib)
 
 ## -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ## Dependency (ASIO)
