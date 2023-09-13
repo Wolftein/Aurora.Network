@@ -29,9 +29,9 @@ inline namespace Proxy
     {
         HRESULT Poll();
 
-        HRESULT Attach([in] vbInt32 OnAttach, [in] vbInt32 OnDetach, [in] vbInt32 OnForward, [in] vbInt32 OnReceive);
+        HRESULT Attach([in] vbInt32 OnAttach, [in] vbInt32 OnDetach, [in] vbInt32 OnForward, [in] vbInt32 OnReceive, [in] vbInt32 OnError);
 
-        HRESULT Listen([in] vbInt32 Capacity, [in] vbStr8 Address, [in] vbStr8 Service);
+        HRESULT Listen([in] vbInt32 Capacity, [in] vbStr8 Address, [in] vbStr8 Service, [out, retval] vbBool * Result);
 
         HRESULT Close();
 
@@ -61,10 +61,10 @@ inline namespace Proxy
         HRESULT Poll();
 
         // \inheritDoc
-        HRESULT Attach(vbInt32 OnAttach, vbInt32 OnDetach, vbInt32 OnForward, vbInt32 OnReceive);
+        HRESULT Attach(vbInt32 OnAttach, vbInt32 OnDetach, vbInt32 OnForward, vbInt32 OnReceive, vbInt32 OnError);
 
         // \inheritDoc
-        HRESULT Listen(vbInt32 Capacity, vbStr8 Address, vbStr8 Service);
+        HRESULT Listen(vbInt32 Capacity, vbStr8 Address, vbStr8 Service, vbBool * Result);
 
         // \inheritDoc
         HRESULT Close();

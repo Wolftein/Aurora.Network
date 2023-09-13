@@ -48,39 +48,47 @@ inline namespace Proxy
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-    HRESULT Server::Attach(vbInt32 OnAttach, vbInt32 OnDetach, vbInt32 OnForward, vbInt32 OnReceive)
+    HRESULT Server::Attach(vbInt32 OnAttach, vbInt32 OnDetach, vbInt32 OnForward, vbInt32 OnReceive, vbInt32 OnError)
     {
-        const auto OnServerAttach  = [OnAttach](UInt32 Session, CStr8 Address) {
+        const auto OnServerAttach  = [OnAttach](UInt32 Session, CStr8 Address)
+        {
             ((void (STDAPICALLTYPE *)(vbInt32, vbStr16)) OnAttach)(Session, VBString8ToString16(Address));
         };
-        const auto OnServerDetach  = [OnDetach](UInt32 Session) {
+        const auto OnServerDetach  = [OnDetach](UInt32 Session)
+        {
             ((void (STDAPICALLTYPE *)(vbInt32)) OnDetach)(Session);
         };
-        const auto OnServerForward = [OnForward](UInt32 Session, auto Message) {
+        const auto OnServerForward = [OnForward](UInt32 Session, auto Message)
+        {
             CComObjectStackEx<Reader> CComReader;
 
             CComReader.mWrapper = Message;
 
             ((void (STDAPICALLTYPE *)(vbInt32, CComObjectStackEx<Reader> *)) OnForward)(Session, & CComReader);
         };
-        const auto OnServerReceive = [OnReceive](UInt32 Session, auto Message) {
+        const auto OnServerReceive = [OnReceive](UInt32 Session, auto Message)
+        {
             CComObjectStackEx<Reader> CComReader;
 
             CComReader.mWrapper = Message;
 
             ((void (STDAPICALLTYPE *)(vbInt32, CComObjectStackEx<Reader> *)) OnReceive)(Session, & CComReader);
         };
+        const auto OnServerError = [OnError](UInt32 Code, CStr8 Message)
+        {
+            ((void (STDAPICALLTYPE *)(vbInt32, vbStr16)) OnError)(Code, VBString8ToString16(Message));
+        };
 
-        mWrapper->Attach(OnServerAttach, OnServerDetach, OnServerForward, OnServerReceive);
+        mWrapper->Attach(OnServerAttach, OnServerDetach, OnServerForward, OnServerReceive, OnServerError);
         return S_OK;
     }
 
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-    HRESULT Server::Listen(vbInt32 Capacity, vbStr8 Address, vbStr8 Service)
+    HRESULT Server::Listen(vbInt32 Capacity, vbStr8 Address, vbStr8 Service, vbBool * Result)
     {
-        mWrapper->Listen(Capacity, Address, Service);
+        (* Result) = (mWrapper->Listen(Capacity, Address, Service) ? vbTrue : vbFalse);
         return S_OK;
     }
 

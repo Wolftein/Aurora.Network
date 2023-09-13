@@ -39,6 +39,9 @@ namespace Aurora::Network
         // -=(Undocumented)=-
         using OnReceive = Method<void(UInt32 Session, Reader & Message)>;
 
+        // -=(Undocumented)=-
+        using OnError   = Method<void(UInt32 Code, CStr8 Description)>;
+
     public:
 
         // -=(Undocumented)=-
@@ -56,10 +59,10 @@ namespace Aurora::Network
         virtual void Poll() = 0;
 
         // -=(Undocumented)=-
-        virtual void Attach(OnAttach OnAttach, OnDetach OnDetach, OnForward OnForward, OnReceive OnReceive) = 0;
+        virtual void Attach(OnAttach OnAttach, OnDetach OnDetach, OnForward OnForward, OnReceive OnReceive, OnError OnError) = 0;
 
         // -=(Undocumented)=-
-        virtual void Listen(UInt32 Capacity, CStr8 Address, CStr8 Service) = 0;
+        virtual Bool Listen(UInt32 Capacity, CStr8 Address, CStr8 Service) = 0;
 
         // -=(Undocumented)=-
         virtual void Close() = 0;

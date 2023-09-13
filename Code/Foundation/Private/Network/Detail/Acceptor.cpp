@@ -46,7 +46,7 @@ namespace Aurora::Network::Detail
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-    void Acceptor::Attach(OnAttach OnAttach, OnDetach OnDetach, OnForward OnForward, OnReceive OnReceive)
+    void Acceptor::Attach(OnAttach OnAttach, OnDetach OnDetach, OnForward OnForward, OnReceive OnReceive, OnError OnError)
     {
         const auto OnChannelAttach  = [OnAttach](const SPtr<Channel> & Channel) {
             OnAttach(Channel->GetID(), Channel->GetAddress());
@@ -69,12 +69,13 @@ namespace Aurora::Network::Detail
         mOnDetach  = OnChannelDetach;
         mOnForward = OnChannelForward;
         mOnReceive = OnChannelReceive;
+        mOnError   = OnError;
     }
 
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-    void Acceptor::Listen(UInt32 Capacity, CStr8 Address, CStr8 Service)
+    Bool Acceptor::Listen(UInt32 Capacity, CStr8 Address, CStr8 Service)
     {
         const asio::ip::tcp::endpoint Endpoint
             = (* asio::ip::tcp::resolver(mAcceptor.get_executor()).resolve(Address.data(), Service.data()));
@@ -83,13 +84,27 @@ namespace Aurora::Network::Detail
 
         mAcceptor.open(Endpoint.protocol());
         mAcceptor.set_option(asio::ip::tcp::acceptor::reuse_address(true));
-        mAcceptor.bind(Endpoint);
-        mAcceptor.listen(mDatabase.size());
+
+        asio::error_code InError;
+
+        if (mAcceptor.bind(Endpoint, InError))
+        {
+            mOnError(InError.value(), MakeStringCompatible(InError.message()));
+            return false;
+        }
+
+        if (mAcceptor.listen(mDatabase.size(), InError))
+        {
+            mOnError(InError.value(), MakeStringCompatible(InError.message()));
+            return false;
+        }
 
         const auto OnCompletion = [Self = this](const auto Error) {
             Self->WhenAccept(Error);
         };
         mAcceptor.async_accept(mConnector, OnCompletion);
+
+        return true;
     }
 
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-

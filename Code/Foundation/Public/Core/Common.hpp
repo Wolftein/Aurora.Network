@@ -93,4 +93,11 @@ inline namespace STL
     // -=(Undocumented)=-
     template<typename T>
     using Method = eastl::function<T>;
+
+    // -=(Undocumented)=-
+    template<typename Type>
+    CStr8 MakeStringCompatible(Type & Value)
+    {
+        return CStr8 { Value.data(), Value.size() };
+    }
 }

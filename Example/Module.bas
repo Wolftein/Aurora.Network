@@ -102,12 +102,18 @@ Private Sub OnServerReceive(ByVal Connection As Long, ByVal Buffer As Network.Re
     End Select
 End Sub
 
+Private Sub OnServerError(ByVal Code As Long, ByVal Description As String)
+    Debug.Print "OnServerError", Code, Description
+End Sub
+
 Private Sub Main()
     Set Server = New Network.Server
     Set Client = New Network.Client
     
-    Call Server.Attach(AddressOf OnServerAttach, AddressOf OnServerDetach, AddressOf OnServerForward, AddressOf OnServerReceive)
-    Call Server.Listen(1, "0.0.0.0", "1000")
+    Call Server.Attach(AddressOf OnServerAttach, AddressOf OnServerDetach, AddressOf OnServerForward, AddressOf OnServerReceive, AddressOf OnServerError)
+    If (Server.Listen(1, "190.0.10.44", "1000") = False) Then
+        Exit Sub
+    End If
     
     Call Client.Attach(AddressOf OnClientAttach, AddressOf OnClientDetach, AddressOf OnClientForward, AddressOf OnClientReceive)
     Call Client.Connect("127.0.0.1", "1000")

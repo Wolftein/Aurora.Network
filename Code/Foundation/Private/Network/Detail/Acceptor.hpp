@@ -36,10 +36,10 @@ namespace Aurora::Network::Detail
         void Poll() override;
 
         // \inheritDoc
-        void Attach(OnAttach OnAttach, OnDetach OnDetach, OnForward OnForward, OnReceive OnReceive) override;
+        void Attach(OnAttach OnAttach, OnDetach OnDetach, OnForward OnForward, OnReceive OnReceive, OnError OnError) override;
 
         // \inheritDoc
-        void Listen(UInt32 Capacity, CStr8 Address, CStr8 Service) override;
+        Bool Listen(UInt32 Capacity, CStr8 Address, CStr8 Service) override;
 
         // \inheritDoc
         void Close() override;
@@ -93,6 +93,7 @@ namespace Aurora::Network::Detail
         Channel::OnDetach       mOnDetach;
         Channel::OnForward      mOnForward;
         Channel::OnReceive      mOnReceive;
+        OnError                 mOnError;
 
         // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
         // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
