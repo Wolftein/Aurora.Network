@@ -111,7 +111,7 @@ Private Sub Main()
     Set Client = New Network.Client
     
     Call Server.Attach(AddressOf OnServerAttach, AddressOf OnServerDetach, AddressOf OnServerForward, AddressOf OnServerReceive, AddressOf OnServerError)
-    If (Server.Listen(1, "190.0.10.44", "1000") = False) Then
+    If (Server.Listen(1, "127.0.0.1", "1000") = False) Then
         Exit Sub
     End If
     

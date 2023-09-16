@@ -48,19 +48,20 @@ namespace Aurora::Network::Detail
     void Connector::Attach(OnAttach OnAttach, OnDetach OnDetach, OnForward OnForward, OnReceive OnReceive)
     {
         const auto OnChannelAttach  = [OnAttach](const SPtr<Channel> & Channel) {
-            OnAttach();
+            if (OnAttach) OnAttach();
         };
         const auto OnChannelDetach  = [OnDetach](const SPtr<Channel> & Channel, SInt32 Code) {
-            OnDetach(Code);
+            if (OnDetach) OnDetach(Code);
         };
         const auto OnChannelForward = [OnForward](const SPtr<Channel> & Channel, CPtr<UInt08> Data) {
             Reader Message(Data);
-            OnForward(Message);
+            if (OnForward) OnForward(Message);
         };
         const auto OnChannelReceive = [OnReceive](const SPtr<Channel> & Channel, CPtr<UInt08> Data) {
             Reader Message(Data);
-            OnReceive(Message);
+            if (OnReceive) OnReceive(Message);
         };
+
         mChannel->Attach(OnChannelAttach, OnChannelDetach, OnChannelForward, OnChannelReceive);
     }
 

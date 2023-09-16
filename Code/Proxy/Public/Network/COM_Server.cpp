@@ -32,7 +32,11 @@ inline namespace Proxy
 
     HRESULT Server::FinalRelease()
     {
-        mWrapper = nullptr;
+        if (mWrapper)
+        {
+            mWrapper->Attach(nullptr, nullptr, nullptr, nullptr, nullptr);
+            mWrapper = nullptr;
+        }
         return S_OK;
     }
 

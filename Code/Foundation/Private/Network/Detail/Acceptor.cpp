@@ -49,27 +49,30 @@ namespace Aurora::Network::Detail
     void Acceptor::Attach(OnAttach OnAttach, OnDetach OnDetach, OnForward OnForward, OnReceive OnReceive, OnError OnError)
     {
         const auto OnChannelAttach  = [OnAttach](const SPtr<Channel> & Channel) {
-            OnAttach(Channel->GetID(), Channel->GetAddress());
+            if (OnAttach) OnAttach(Channel->GetID(), Channel->GetAddress());
         };
         const auto OnChannelDetach  = [this, OnDetach](const SPtr<Channel> & Channel, SInt32 Code) {
-            OnDetach(Channel->GetID());
+            if (OnDetach) OnDetach(Channel->GetID());
 
             WhenDetach(Channel);
         };
         const auto OnChannelForward = [OnForward](const SPtr<Channel> & Channel, CPtr<UInt08> Data) {
             Reader Message(Data);
-            OnForward(Channel->GetID(), Message);
+            if (OnForward) OnForward(Channel->GetID(), Message);
         };
         const auto OnChannelReceive = [OnReceive](const SPtr<Channel> & Channel, CPtr<UInt08> Data) {
             Reader Message(Data);
-            OnReceive(Channel->GetID(), Message);
+            if (OnReceive) OnReceive(Channel->GetID(), Message);
+        };
+        const auto OnChannelError = [OnError](UInt32 Code, CStr8 Description) {
+            if (OnError) OnError(Code, Description);
         };
 
         mOnAttach  = OnChannelAttach;
         mOnDetach  = OnChannelDetach;
         mOnForward = OnChannelForward;
         mOnReceive = OnChannelReceive;
-        mOnError   = OnError;
+        mOnError   = OnChannelError;
     }
 
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -77,15 +80,27 @@ namespace Aurora::Network::Detail
 
     Bool Acceptor::Listen(UInt32 Capacity, CStr8 Address, CStr8 Service)
     {
-        const asio::ip::tcp::endpoint Endpoint
-            = (* asio::ip::tcp::resolver(mAcceptor.get_executor()).resolve(Address.data(), Service.data()));
+        asio::error_code InError;
+
+        asio::ip::tcp::resolver Resolver(mAcceptor.get_executor());
+        const auto Result = Resolver.resolve(Address.data(), Service.data(), InError);
+        if (InError)
+        {
+            mOnError(InError.value(), MakeStringCompatible(InError.message()));
+            return false;
+        }
+
+        const asio::ip::tcp::endpoint Endpoint = (* Result);
 
         mDatabase.resize(Capacity + 1);
 
-        mAcceptor.open(Endpoint.protocol());
-        mAcceptor.set_option(asio::ip::tcp::acceptor::reuse_address(true));
+        if (mAcceptor.open(Endpoint.protocol(), InError))
+        {
+            mOnError(InError.value(), MakeStringCompatible(InError.message()));
+            return false;
+        }
 
-        asio::error_code InError;
+        mAcceptor.set_option(asio::ip::tcp::acceptor::reuse_address(true));
 
         if (mAcceptor.bind(Endpoint, InError))
         {
