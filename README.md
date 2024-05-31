@@ -1,3 +1,6 @@
+** NO LONGER MANTAINED, USE AURORA.ENGINE **
+
+
 For those who want to compile this library from the command line:
 
 ```
